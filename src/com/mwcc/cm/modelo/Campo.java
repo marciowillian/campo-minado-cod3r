@@ -3,6 +3,8 @@ package com.mwcc.cm.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mwcc.cm.excecao.ExplosaoException;
+
 public class Campo {
 	private final int linha;
 	private final int coluna;
@@ -37,4 +39,63 @@ public class Campo {
 		} 
 		return false;
 	}
+	
+	void alternarMarcacao() {
+		if(!aberto) {
+			marcado = !marcado;
+		}
+	}
+	
+	boolean abrir() {
+		if(!aberto && !marcado) {
+			aberto = true;
+			
+			if(minado) {
+				throw new ExplosaoException();
+			}
+			
+			if(vizinhancaSegura()) {
+				vizinhos.forEach(v -> v.abrir());
+			}
+			
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	void minar() {
+		minado = true;
+	}
+	
+	boolean vizinhancaSegura() {
+		return vizinhos.stream().noneMatch(v -> v.minado);
+	}
+	
+	public boolean isMarcado() {
+		return marcado;
+	}
+
+	public boolean isMinado() {
+		return minado;
+	}
+
+	public boolean isAberto() {
+		return aberto;
+	}
+
+	public void setAberto(boolean aberto) {
+		this.aberto = aberto;
+	}
+
+	public List<Campo> getVizinhos() {
+		return vizinhos;
+	}
+
+	public void setVizinhos(List<Campo> vizinhos) {
+		this.vizinhos = vizinhos;
+	}
+	
+	
+	
 }
