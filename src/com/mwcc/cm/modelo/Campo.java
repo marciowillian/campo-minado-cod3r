@@ -46,7 +46,7 @@ public class Campo {
 		}
 	}
 	
-	boolean abrir() {
+	public boolean abrir() {
 		if(!aberto && !marcado) {
 			aberto = true;
 			
@@ -66,6 +66,10 @@ public class Campo {
 	
 	void minar() {
 		minado = true;
+	}
+	
+	public void setMinado(boolean minado) {
+		this.minado = minado;
 	}
 	
 	boolean vizinhancaSegura() {
@@ -92,10 +96,40 @@ public class Campo {
 		return vizinhos;
 	}
 
-	public void setVizinhos(List<Campo> vizinhos) {
-		this.vizinhos = vizinhos;
+	public void setMarcado(boolean marcado) {
+		this.marcado = marcado;
 	}
 	
 	
 	
+	boolean objetivoAlcancado() {
+		boolean desvendado = !minado && aberto;
+		boolean protegido = minado && marcado;
+		return desvendado || protegido;
+	}
+	
+	long minasNaVizinhanca() {
+		return vizinhos.stream().filter(v -> v.minado).count();
+	}
+	
+	void reiniciar() {
+		aberto = false;
+		minado = false;
+		marcado = false;
+	}
+		
+	@Override
+	public String toString() {
+		if(marcado) {
+			return "x";
+		}else if(aberto && minado) {
+			return "*";
+		}else if(aberto && minasNaVizinhanca() > 0) {
+			return Long.toString(minasNaVizinhanca());
+		}else if(aberto) {
+			return " ";
+		}else {
+			return "?";
+		}
+	}
 }

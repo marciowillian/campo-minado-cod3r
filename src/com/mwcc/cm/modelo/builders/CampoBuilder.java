@@ -21,6 +21,26 @@ public class CampoBuilder {
 		return this;
 	}
 	
+	public CampoBuilder minar(boolean minado) {
+		campo.setMinado(minado);
+		return this;
+	}
+	
+	public CampoBuilder abrir() {
+		campo.abrir();
+		return this;
+	}
+	
+	public CampoBuilder abrirSemExplodir() {
+		campo.setAberto(true);
+		return this;
+	}
+	
+	public CampoBuilder marcar() {
+		campo.setMarcado(true);
+		return this;
+	}
+	
 	public Campo agora() {
 		return campo;
 	}

@@ -1,7 +1,5 @@
 package com.mwcc.cm.modelo;
 
-import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -98,7 +96,7 @@ public class CampoTest {
 		campo.setAberto(true);
 
 		assertFalse(campo.abrir());
-	}
+	} 
 
 	@Test()
 	void testarAbirCampoMinado() {
@@ -122,13 +120,115 @@ public class CampoTest {
 		Campo cp11 = CampoBuilder.umCampo().linhaEColuna(1, 3).agora();
 		Campo cp12 = CampoBuilder.umCampo().linhaEColuna(1, 4).agora();
 
-		vizinhos = Arrays
-				.asList(cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, cp11, cp12);
+		vizinhos = Arrays.asList(cp1, cp2, cp3, cp4, cp5, cp6, cp7, cp8, cp9, cp10, cp11, cp12);
 
-		campo.setVizinhos(vizinhos);
-		
-		campo.abrir();
-		
+		for (Campo campoTemp : vizinhos) {
+			campo.adicionarVizinho(campoTemp);
+			campo.abrir();
+		}
+
 		assertTrue(campo.vizinhancaSegura());
 	}
+	
+	@Test
+	void testarMetodoObjetivoAlcancadoDesvendado() {
+		Campo cp1 = CampoBuilder.umCampo().abrir().agora();
+		
+		boolean result = cp1.objetivoAlcancado();
+		
+		assertTrue(result);
+	}
+	
+	@Test
+	void testarMetodoObjetivoAlcancadoProtegido() {
+		Campo cp1 = CampoBuilder.umCampo().minar(true).marcar().agora();
+		
+		boolean result = cp1.objetivoAlcancado();
+		
+		assertTrue(result);
+	}
+	
+	@Test
+	void testarMinasNaVizinhanca() {
+		Campo cp1 = CampoBuilder.umCampo().linhaEColuna(2, 2).minar(true).agora();
+		Campo cp2 = CampoBuilder.umCampo().linhaEColuna(2, 3).minar(true).agora();
+		Campo cp3 = CampoBuilder.umCampo().linhaEColuna(2, 4).minar(true).agora();
+		Campo cp4 = CampoBuilder.umCampo().linhaEColuna(3, 2).minar(true).agora();
+		Campo cp5 = CampoBuilder.umCampo().linhaEColuna(3, 4).minar(true).agora();
+		
+		Campo cp6 = CampoBuilder.umCampo().linhaEColuna(3, 3).agora();
+
+		cp6.adicionarVizinho(cp1);
+		cp6.adicionarVizinho(cp2);
+		cp6.adicionarVizinho(cp3);
+		cp6.adicionarVizinho(cp4);
+		cp6.adicionarVizinho(cp5);
+		
+		assertTrue(cp6.minasNaVizinhanca() > 0);		
+	}
+	
+	@Test
+	void testarReiniciar() {
+		Campo cp1 = CampoBuilder.umCampo().linhaEColuna(2, 2).minar(true).marcar().abrir().agora();
+		
+		cp1.reiniciar();
+		
+		assertTrue(!cp1.isAberto() && !cp1.isMinado() && !cp1.isMarcado());
+	}
+	
+	@Test
+	void testarToStringMarcado() {
+		Campo cp1 = CampoBuilder.umCampo().linhaEColuna(2, 2).marcar().agora();
+		
+		String result = cp1.toString();
+		
+		assertTrue(result.equals("x"));
+	}
+	
+	@Test
+	void testarToStringMinado() {
+		Campo cp1 = CampoBuilder.umCampo().linhaEColuna(2, 2).minar(true).abrirSemExplodir().agora();
+		
+		String result = cp1.toString();
+		
+		assertTrue(result.equals("*"));
+	}
+	
+	@Test
+	void testarToStringAbertoMinasNaVizinhanca() {
+		Campo cp1 = CampoBuilder.umCampo()
+				.linhaEColuna(2, 2)
+				.abrir()
+				.agora();
+		
+		Campo cp2 = CampoBuilder.umCampo()
+				.linhaEColuna(2, 3)
+				.minar(true)
+				.agora();
+		
+		cp1.adicionarVizinho(cp2);
+		
+		String result = cp1.toString();
+		
+		assertTrue(result.equals("1"));
+	}
+	
+	@Test
+	void testarToStringAberto() {
+		Campo cp1 = CampoBuilder.umCampo().linhaEColuna(2, 2).abrir().agora();
+		
+		String result = cp1.toString();
+		
+		assertTrue(result.equals(" "));
+	}
+	
+	@Test
+	void testarToStringCampoNovo() {
+		Campo cp1 = CampoBuilder.umCampo().linhaEColuna(2, 2).agora();
+		
+		String result = cp1.toString();
+		
+		assertTrue(result.equals("?"));
+	}
+	
 }
