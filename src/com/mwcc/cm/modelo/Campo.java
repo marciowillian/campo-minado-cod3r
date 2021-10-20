@@ -100,8 +100,16 @@ public class Campo {
 		this.marcado = marcado;
 	}
 	
+	 
 	
-	
+	public int getLinha() {
+		return linha;
+	}
+
+	public int getColuna() {
+		return coluna;
+	}
+
 	boolean objetivoAlcancado() {
 		boolean desvendado = !minado && aberto;
 		boolean protegido = minado && marcado;
