@@ -1,6 +1,7 @@
 package com.mwcc.cm.visao;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import com.mwcc.cm.excecao.ExplosaoException;
@@ -47,7 +48,16 @@ public class TabuleiroConsole {
 				
 				String digitado = capturarValorDigitado("Digite (x, y): ");
 				
-				System.out.println(Arrays.toString(digitado.split(",")));
+				Iterator<Integer> xy = Arrays.stream(digitado.split(","))
+				.map(e -> Integer.parseInt(e.trim())).iterator();
+				
+				digitado = capturarValorDigitado("1 - Abrir ou 2 - (Des)Marcar: ");
+				
+				if("1".equals(digitado)) {
+					tabuleiro.abrir(xy.next(), xy.next());
+				}else if("2".equals(digitado)){
+					tabuleiro.alterarMarcacao(xy.next(), xy.next());
+				}
 			}
 			
 			System.out.println("Você ganhou!!!!");
